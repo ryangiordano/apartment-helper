@@ -5,6 +5,11 @@ import * as cheerio from "cheerio";
 export class Scraper {
     constructor() {
     }
+
+    private cleanString = (string) => string.trim().replace(/[^\d]/g, "")
+    private stringToNumber = (string) => parseInt(string);
+    private stringToFloat = (string) => ()=>parseFloat(string);
+    private getText
     public getDataFromURL(url): Promise<any> {
         return axios(url)
             .then((response) => {
@@ -24,12 +29,16 @@ export class Scraper {
 
                 statsTable.each((_idx, row) => {
                     // identified by the UID: '{property-id}-{rental-key}'
-                    const bedString = $(row).find(".beds .shortText").text().trim().replace(/[^\d]/g, "");
+                    const bedString = this.cleanString($(row).find(".beds .shortText").text());
                     const beds = !bedString.length ? 0 : parseInt(bedString);
-                    const baths = parseInt($(row).find(".baths .shortText").text().trim().replace(/[^\d]/g, ""));
-                    const squareFootage = parseInt($(row).find(".sqft").text().trim().replace(/[^\d]/g, ""));
+
+                    const baths = parseInt(this.cleanString($(row).find(".baths .shortText").text()));
+
+                    const squareFootage = parseInt(this.cleanString($(row).find(".sqft").text().trim().replace(/[^\d]/g, "")));
                     const name = $(row).find(".name").text().trim();
-                    const id = `${$("main").first().data("listingid")}-${$(row).data("rentalkey")}`;
+                    const listingId = $("main").first().data("listingid");
+                    const rentalId = $(row).data("rentalkey");
+                    const uid = `${listingId}-${rentalId}`;
                     const leaseLength = $(row).find(".leaseLength").text().trim();
                     const available = $(row).find(".available").text().trim();
                     // tslint:disable-next-line:radix
@@ -38,7 +47,9 @@ export class Scraper {
                     const timeStamp = new Date().toString();
                     const realRent = [...rent.split("-")].map((r) => parseInt(r.trim().replace(/[^\d]/g, "")) || "N/A");
                     const dataObject = {
-                        id,
+                        id: uid,
+                        listingId,
+                        rentalId, 
                         propertyName,
                         unitName: name,
                         address,

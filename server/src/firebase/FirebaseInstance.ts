@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 dotenv.config();
 
 export interface Feedback {
-    email: string, 
+    email: string,
     feedback: string,
     gameplay: string,
     graphics: string,
@@ -35,17 +35,17 @@ class FirebaseInstance {
 
     doSignInWithEmailAndPassword = (email, password) => this.auth.signInWithEmailAndPassword(email, password)
 
-    doSignOut = ()=>this.auth.signOut()
+    doSignOut = () => this.auth.signOut()
 
-    doPasswordReset = email=>this.auth.sendPasswordResetEmail(email);
+    doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
-    doPasswordUpdate = password=>this.auth.currentUser.updatePassword(password);
+    doPasswordUpdate = password => this.auth.currentUser.updatePassword(password);
 
-    getFirebase= ()=>this.app
+    getFirebase = () => this.app
 
-    getDataById(id): Promise<any>{
+    getDataById(id): Promise<any> {
         const fb = this.getFirebase().database().ref(`history`);
-        return fb.on('value', (snapshot)=>{
+        return fb.on('value', (snapshot) => {
             const data = snapshot.val();
             console.log(data)
         });
@@ -60,7 +60,7 @@ class FirebaseInstance {
         //       acc[starValue]++;
         //       return acc;
         //     }, { 1:0, 2:0, 3:0, 4:0, 5:0})
-    
+
         //   console.log(data)
         //   const dataToReturn = data ? Object.keys(data).map(key=>({x:key, y: data[key]})) : [];
         //   this.setState({ data: dataToReturn })
@@ -71,16 +71,15 @@ class FirebaseInstance {
 
     }
 
-    storeApartmentSnapshot(data){
+    storeApartmentSnapshot(data) {
         const fb = this.getFirebase().database().ref('history');
-        data.forEach(d=>{
+        data.forEach(d => {
             const id = d.id;
-            console.log(id)
-            
-            // fb.child(id).set(d)
+            console.log(id);
+            fb.child(id).push(d)
         })
         // fb.child(data.)
     }
-}   
+}
 
 export const firebaseInstance = new FirebaseInstance();

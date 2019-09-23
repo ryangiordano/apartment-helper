@@ -1,0 +1,6 @@
+Apartment Helper
+A simple web scraper for parsing data from apartment websites.
+
+For development on the server: `build:watch` and `npm start`
+
+For development on the client: `npm run dev`

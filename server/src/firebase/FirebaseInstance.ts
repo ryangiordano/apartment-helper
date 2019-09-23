@@ -44,42 +44,52 @@ class FirebaseInstance {
     getFirebase = () => this.app
 
     getDataById(id): Promise<any> {
+        //TODO: Implement correctly
         const fb = this.getFirebase().database().ref(`history`);
         return fb.on('value', (snapshot) => {
             const data = snapshot.val();
             console.log(data)
         });
+    }
 
+    checkIfUrlExists(url): Promise<any> {
+        return new Promise(async (resolve, reject) => {
+            const allUrls = await this.getAllUrls();
+            const exists = !!Object.values(allUrls).find(v => v === url);
+            resolve(exists)
+        });
+    }
 
-        // const fb = firebaseInstance.getFirebase().database().ref('feedback');
-        // fb.on('value', (snapshot) => {
-        //   const dataFromFB = snapshot.val();
-        //   console.log(dataFromFB)
-        //   const data = dataFromFB && Object.keys(dataFromFB).reduce((acc, key) => {
-        //       const starValue = dataFromFB[key].graphics;
-        //       acc[starValue]++;
-        //       return acc;
-        //     }, { 1:0, 2:0, 3:0, 4:0, 5:0})
+    getAllUrls(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const fb = this.getFirebase().database().ref(`urls`);
+            fb.once('value', (snapshot) => {
+                resolve(snapshot.val())
+            });
+        });
+    }
 
-        //   console.log(data)
-        //   const dataToReturn = data ? Object.keys(data).map(key=>({x:key, y: data[key]})) : [];
-        //   this.setState({ data: dataToReturn })
-        // })
-
-
-
-
+    addUrl(url): Promise<any> {
+        return new Promise(async (resolve, reject) => {
+            const fb = this.getFirebase().database().ref(`urls`);
+            const exists = await this.checkIfUrlExists(url);
+            if (exists) {
+                return reject("Error: URL already exists.");
+            }
+            resolve(fb.push(url));
+        });
     }
 
     storeApartmentSnapshot(data) {
         const fb = this.getFirebase().database().ref('history');
         data.forEach(d => {
             const id = d.id;
-            console.log(id);
             fb.child(id).push(d)
+            console.log(`Storing data for apartment with id: ${id}`)
         })
-        // fb.child(data.)
     }
+
+    add
 }
 
 export const firebaseInstance = new FirebaseInstance();

@@ -7,9 +7,7 @@ export class Scraper {
     }
 
     private cleanString = (string) => string.trim().replace(/[^\d]/g, "")
-    private stringToNumber = (string) => parseInt(string);
-    private stringToFloat = (string) => ()=>parseFloat(string);
-    private getText
+    
     public getDataFromURL(url): Promise<any> {
         return axios(url)
             .then((response) => {
@@ -34,7 +32,7 @@ export class Scraper {
 
                     const baths = parseInt(this.cleanString($(row).find(".baths .shortText").text()));
 
-                    const squareFootage = parseInt(this.cleanString($(row).find(".sqft").text().trim().replace(/[^\d]/g, "")));
+                    const squareFootage = parseInt(this.cleanString($(row).find(".sqft").text()));
                     const name = $(row).find(".name").text().trim();
                     const listingId = $("main").first().data("listingid");
                     const rentalId = $(row).data("rentalkey");
@@ -42,7 +40,7 @@ export class Scraper {
                     const leaseLength = $(row).find(".leaseLength").text().trim();
                     const available = $(row).find(".available").text().trim();
                     // tslint:disable-next-line:radix
-                    const deposit = parseInt($(row).find(".deposit").text().trim().replace(/[^\d]/g, ""));
+                    const deposit = parseInt(this.cleanString($(row).find(".deposit").text()));
                     const rent = $(row).find(".rent").text().trim();
                     const timeStamp = new Date().toString();
                     const realRent = [...rent.split("-")].map((r) => parseInt(r.trim().replace(/[^\d]/g, "")) || "N/A");

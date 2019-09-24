@@ -2,6 +2,7 @@ import app from 'firebase/app' // eslint-disable-line
 import 'firebase/auth'
 import 'firebase/database'
 import * as dotenv from 'dotenv'
+import { resolve } from 'path';
 dotenv.config();
 
 export interface Feedback {
@@ -52,6 +53,16 @@ class FirebaseInstance {
         });
     }
 
+    getAllData(): Promise<any> {
+        return new Promise((resolve) => {
+            const fb = this.getFirebase().database().ref(`history`);
+            fb.on('value', (snapshot) => {
+                const data = snapshot.val();
+                resolve(snapshot.val())
+            });
+        })
+    }
+
     checkIfUrlExists(url): Promise<any> {
         return new Promise(async (resolve, reject) => {
             const allUrls = await this.getAllUrls();
@@ -88,8 +99,6 @@ class FirebaseInstance {
             console.log(`Storing data for apartment with id: ${id}`)
         })
     }
-
-    add
 }
 
 export const firebaseInstance = new FirebaseInstance();

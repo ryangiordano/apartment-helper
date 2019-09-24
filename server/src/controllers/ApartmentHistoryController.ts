@@ -80,9 +80,9 @@ export default class ApartmentHistoryController {
         this.router.get(`${this.path}/take-snapshots`, () => this.takeSnapshotsOfUrls());
     }
 
-    getAll = (request: express.Request, response: express.Response) => {
-        response.send("Get all History");
-        console.log(request)
+    getAll = async (request: express.Request, response: express.Response) => {
+        const data = await firebaseInstance.getAllData();
+        response.send(JSON.stringify(data));
     }
 
     private _getAllUrls = async () => {

@@ -23,6 +23,7 @@ export class Scraper {
                 const rating = parseFloat($(".rating > span")
                     .attr("content")) ||
                     parseInt($(".rating")
+                        .attr("title") && $(".rating")
                         .attr("title").replace(/[^\d]/g, ""));
 
                 statsTable.each((_idx, row) => {
